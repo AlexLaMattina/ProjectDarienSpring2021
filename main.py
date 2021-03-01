@@ -19,9 +19,8 @@ server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
 url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/Spring2021DashboardData.csv'
-url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarien/master/PeopleActivity.csv'
-url4 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarien/master/SocialDistanceVar.csv'
-url5 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarien/master/Percentagesbyweek.csv'
+url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarien/master/Percentagesbyweek.csv'
+
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
 pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int", "LON": "float", "LAT": "float",
                               "activity": "int",
@@ -30,25 +29,13 @@ pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int",
                               "socialdist": "int", "agegroup 1=<18, 2=18-30, 3=31-55, 4=>55": "int",
                               "white": "int", "sex": "int",
                               "obese": "int"})
-af = pd.read_csv(url3, dtype={"date": "string",
-                              "activity 1=not morving, 2=walking, 3=running, 4=biking, 6=skateboarding": "int"})
-sf = pd.read_csv(url4, dtype={"id": "int",
-                              "Masksd 0=Mask Non-Complient and Not Social Distancing; "
-                              "1 = Mask Complient and Social Distancing; 9= could not be determined": "int"})
-per = pd.read_csv(url5, dtype={"studyweek": "float", "activity": "float", "withmask": "float", "maskincorrect": "float",
+
+
+per = pd.read_csv(url3, dtype={"studyweek": "float", "activity": "float", "withmask": "float", "maskincorrect": "float",
                                "notsocialdist": "float", "ageover55": "float", "percentmale": "float", "percentobese":
                                    "float", "percentnonwhite": "float", "percenttouchedsurface": "float",
                                "percenttouchedface": "float", "percentnotcomliantsdmask": "float"})
-# dates = pf["date"].unique()
-# dates = list(sorted(dates.astype(str)))
 
-
-afdate = pf["date"]
-afact = pf["activity"]
-activitieslist = list(zip(afdate, afact))
-activitieslist.sort()
-
-# Still need to add mask other, gender, surface type, fix mouth exposed, and direction?
 
 fig = go.Figure()
 fig = make_subplots(rows=3, cols=4, subplot_titles=("Percent of Total Described With a Mask",
