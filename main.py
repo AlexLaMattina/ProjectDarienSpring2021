@@ -19,7 +19,7 @@ server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
 url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/ProjectDarien2021data.csv'
-url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarien/master/Percentagesbyweek.csv'
+url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentagesspring2021.csv'
 
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
 pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int", "LON": "float", "LAT": "float",
@@ -31,56 +31,48 @@ pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int",
                               "obese": "int"})
 
 
-per = pd.read_csv(url3, dtype={"studyweek": "float", "activity": "float", "withmask": "float", "maskincorrect": "float",
-                               "notsocialdist": "float", "ageover55": "float", "percentmale": "float", "percentobese":
-                                   "float", "percentnonwhite": "float", "percenttouchedsurface": "float",
-                               "percenttouchedface": "float", "percentnotcomliantsdmask": "float"})
+per = pd.read_csv(url3, dtype={"week": "float", "haveamask": "float", "maskcorrect": "float", "sdmaskcompliant": "float",
+                               "sdcompliant": "float", "age18to30": "float", "white": "float", "female":
+                                   "float", "normalwgt": "float", "moving": "float"})
 
 
 fig = go.Figure()
-fig = make_subplots(rows=3, cols=4, subplot_titles=("Percent of Total Described With a Mask",
-                                                    "Percent of all Those Wearing a Mask Incorrectly",
-                                                    "Percent of Total Described Not Compliant with Regulations<br>"
-                                                    "(Mask Incorrect/No Mask + Not Social Distancing = Non-compliant)",
+fig = make_subplots(rows=3, cols=3, subplot_titles=("Percent of Total Described With a Mask",
+                                                    "Percent of all Those Wearing a Mask Correctly",
+                                                    "Percent of Total Described Compliant with Regulations",
                                                     "Percent of Total Described Moving<br>(Walking, Biking, Running)",
-                                                    "Percent of Total Described Touching Surfaces",
-                                                    "Percent of Total Described Touching their Face",
-                                                    "Percent of Total Described Not Social Distancing<br>"
+                                                    "Percent of Total Described Social Distancing<br>"
                                                     "(<6 Feet From Someone)",
-                                                    "Percent of Total Described Obese",
-                                                    "Percent of Total Described Male",
-                                                    "Percent of Total Described Nonwhite",
-                                                    "Percent of Total Described 55 Plus Years of Age"))
+                                                    "Percent of Total Described with a Normal Weight",
+                                                    "Percent of Total Described Female",
+                                                    "Percent of Total Described White",
+                                                    "Percent of Total Described Age 18 to  30"))
 
 for i in fig['layout']['annotations']:
     i['font'] = dict(size=10)
 
 wearingmaskper = []
-incorrectmaskper = []
-noncompliantper = []
+correctmaskper = []
+compliantper = []
 activityper = []
-touchsurfper = []
-touchfaceper = []
-notsocialdistper = []
-obeseper = []
-malesper = []
-nonwhiteper = []
-over55per = []
+socialdistper = []
+normweightper = []
+femalesper = []
+whiteper = []
+ageper = []
 
 for i in per.index:
-    wearingmaskper.append(per['withmask'][i])
-    incorrectmaskper.append(per['maskincorrect'][i])
-    noncompliantper.append(per['percentnotcomliantsdmask'][i])
-    activityper.append(per['activity'][i])
-    touchsurfper.append(per['percenttouchedsurface'][i])
-    touchfaceper.append(per['percenttouchedface'][i])
-    notsocialdistper.append(per['notsocialdist'][i])
-    obeseper.append(per['percentobese'][i])
-    malesper.append(per['percentmale'][i])
-    nonwhiteper.append(per['percentnonwhite'][i])
-    over55per.append(per['ageover55'][i])
+    wearingmaskper.append(per['haveamask'][i])
+    correctmaskper.append(per['maskcorrect'][i])
+    compliantper.append(per['sdmaskcompliant'][i])
+    activityper.append(per['moving'][i])
+    socialdistper.append(per['sdcompliant'][i])
+    normweightper.append(per['normalwgt'][i])
+    femalesper.append(per['female'][i])
+    whiteper.append(per['white'][i])
+    ageper.append(per['age18to30'][i])
 
-dates = ["8/20/2020 & 8/24/2020", "9/03/2020", "9/11/2020", "9/16/2020", "9/22/2020", "9/28/2020"]
+dates = ["2/10/2021", "2/16/2021"]
 
 fig.append_trace(go.Scatter(
     hovertext="Percent Wearing Masks",
@@ -94,23 +86,24 @@ fig.append_trace(go.Scatter(
 
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Wearing Masks Incorrectly",
+    hovertext="Percent Wearing Masks Correctly",
     name="",
     mode='lines+markers',
     x=dates,
-    y=incorrectmaskper, ),
+    y=correctmaskper, ),
     row=1,
     col=2)
 # INCORRECT WEARING TREND
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Non Compliant",
+    hovertext="Percent Compliant",
     name="",
     mode='lines+markers',
     x=dates,
-    y=noncompliantper, ),
+    y=compliantper, ),
     row=1,
     col=3)
+
 
 fig.append_trace(go.Scatter(
     hovertext="Percent Doing an Activity",
@@ -118,69 +111,52 @@ fig.append_trace(go.Scatter(
     mode='lines+markers',
     x=dates,
     y=activityper, ),
-    row=1,
-    col=4)
-
-fig.append_trace(go.Scatter(
-    hovertext="Percent Touching Surfaces",
-    name="",
-    mode='lines+markers',
-    x=dates,
-    y=touchsurfper),
     row=2,
     col=1)
 
+
 fig.append_trace(go.Scatter(
-    hovertext="Percent Touching Own Face",
+    hovertext="Percent  Social Distancing",
     name="",
     mode='lines+markers',
     x=dates,
-    y=touchfaceper),
+    y=socialdistper),
     row=2,
     col=2)
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Not Social Distancing",
+    hovertext="Percent Normal Weight",
     name="",
     mode='lines+markers',
     x=dates,
-    y=notsocialdistper),
+    y=normweightper, ),
     row=2,
     col=3)
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Obese",
+    hovertext="Percent Female",
     name="",
     mode='lines+markers',
     x=dates,
-    y=obeseper, ),
-    row=2,
-    col=4)
-
-fig.append_trace(go.Scatter(
-    hovertext="Percent Male",
-    name="",
-    mode='lines+markers',
-    x=dates,
-    y=malesper),
+    y=femalesper),
     row=3,
     col=1)
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Nonwhite",
+    hovertext="Percent White",
     name="",
     mode='lines+markers',
     x=dates,
-    y=nonwhiteper),
+    y=whiteper),
     row=3,
     col=2)
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent Over 55 years old",
+    hovertext="Percent Between 18 and 30 years old",
     name="",
     mode='lines+markers',
     x=dates,
-    y=over55per),
+    y=ageper),
     row=3,
     col=3)
 
@@ -600,7 +576,7 @@ sliders = [dict(
 
 steps = []
 
-num_steps = 6
+num_steps = 2
 for i in range(num_steps):
     step = dict(
         label=dates[i],
