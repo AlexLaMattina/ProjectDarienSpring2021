@@ -1,0 +1,4 @@
+﻿semester 1=fall 2=spring,studyweek 1=baseline,"activity % moving (walk, run, bike)",withmask % with a mask,maskincorrect (% without mask or with mask but worn incorrectly),notphysicaldist (% < 6 ft from someone),percentnotcomliantsdmask (% non-compliant with mask wearing and physical distancing),ageover55,percentmale,percentobese,percentnonwhite
+2.00,1.00,74.70,75.30,39.60,40.70,18.60,7.10,50.60,20.70,12.50
+2.00,2.00,79.40,81.20,30.90,45.90,14.40,2.90,34.40,14.20,6.50
+2.00,3.00,68.70,74.90,40.70,56.50,28.40,2.00,41.40,16.50,13.70
