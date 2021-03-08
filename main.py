@@ -18,17 +18,21 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
-url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/ProjectDarien2021data.csv'
+url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeek1to3Data.csv'
 url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentagesspring2021.csv'
 
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
 pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int", "LON": "float", "LAT": "float",
-                              "activity": "int",
-                              "withmask": "int",
-                              "maskcompliant": "int",
-                              "socialdist": "int", "agegroup 1=<18, 2=18-30, 3=31-55, 4=>55": "int",
-                              "white": "int", "sex": "int",
-                              "obese": "int"})
+                              "activity 1= not moving; 2-6=moving (walk, run, bike, skateboard)": "int",
+                              "withmask (0=without mask)": "int",
+                              "maskproper (0= mask is not worn correctly)": "int",
+                              "nomaskincor (0=no mask or with mask but worn incorrectly)": "int",
+                              "socialdist (0=not physical distancing < 6 ft)": "int",
+                              "Masksd (0=non-compliance with mask wearing and physical distancing)": "int",
+                              "agegroup (1=<18;2=19-30;3=31-55;4=>55)": "int",
+                              "white (0=nonwhite)": "int", "sex": "int",
+                              "sex (1=male)": "int",
+                              "obese (0=not overweight or obese)": "int"})
 
 
 per = pd.read_csv(url3, dtype={"week": "float", "haveamask": "float", "maskcorrect": "float", "sdmaskcompliant": "float",
@@ -116,7 +120,7 @@ fig.append_trace(go.Scatter(
 
 
 fig.append_trace(go.Scatter(
-    hovertext="Percent  Social Distancing",
+    hovertext="Percent Social Distancing",
     name="",
     mode='lines+markers',
     x=dates,
@@ -179,6 +183,14 @@ date2nomasklat = []
 date2unknownlon = []
 date2unknownlat = []
 
+date3masklon = []
+date3masklat = []
+date3id = []
+date3nomasklon = []
+date3nomasklat = []
+date3unknownlon = []
+date3unknownlat = []
+
 masklon = []
 masklat = []
 ids = []
@@ -190,10 +202,10 @@ unknownlat = []
 for i in pf.index:
     if pf['date'][i] == '2/10/2021':
         date1id.append(pf['id'][i])
-        if pf["maskcompliant"][i] == 1 and pf["socialdist"][i] == 1:
+        if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
             date1masklon.append(pf['LON'][i])
             date1masklat.append(pf['LAT'][i])
-        elif pf["maskcompliant"][i] == 0 and pf["socialdist"][i] == 0:
+        elif pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 0:
             date1nomasklon.append(pf['LON'][i])
             date1nomasklat.append(pf['LAT'][i])
         else:
@@ -201,22 +213,33 @@ for i in pf.index:
             date1unknownlat.append(pf['LAT'][i])
     if pf['date'][i] == '2/16/2021':
         date2id.append(pf['id'][i])
-        if pf["maskcompliant"][i] == 1 and pf["socialdist"][i] == 1:
+        if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
             date2masklon.append(pf['LON'][i])
             date2masklat.append(pf['LAT'][i])
-        elif pf["maskcompliant"][i] == 0 and pf["socialdist"][i] == 0:
+        elif pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 0:
             date2nomasklon.append(pf['LON'][i])
             date2nomasklat.append(pf['LAT'][i])
         else:
             date2unknownlon.append(pf['LON'][i])
             date2unknownlat.append(pf['LAT'][i])
+    if pf['date'][i] == '2/26/2021':
+        date3id.append(pf['id'][i])
+        if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
+            date3masklon.append(pf['LON'][i])
+            date3masklat.append(pf['LAT'][i])
+        elif pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 0:
+            date3nomasklon.append(pf['LON'][i])
+            date3nomasklat.append(pf['LAT'][i])
+        else:
+            date3unknownlon.append(pf['LON'][i])
+            date3unknownlat.append(pf['LAT'][i])
 
 
     ids.append(pf['id'][i])
-    if pf["maskcompliant"][i] == 1 and pf["socialdist"][i] == 1:
+    if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
         masklon.append(pf['LON'][i])
         masklat.append(pf['LAT'][i])
-    elif pf["maskcompliant"][i] == 0 and pf["socialdist"][i] == 0:
+    elif pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 0:
         nomasklon.append(pf['LON'][i])
         nomasklat.append(pf['LAT'][i])
     else:
@@ -360,6 +383,15 @@ trace6 = maketrace("2/16/2021", date2nomasklat, date2nomasklon, date2df, "red", 
 trace7 = maketrace("2/16/2021", date2unknownlat, date2unknownlon, date2df, "grey", "circle",
                    "Unknown data", True, "UNKNOWN")
 
+date3df = DataFrame(date3id, columns=['ID'])
+trace8 = maketrace("2/26/2021", date3masklat, date3masklon, date3df, "blue", "circle", "Mask Data", True,
+                   "YES")
+trace9 = maketrace("2/26/2021", date3nomasklat, date3nomasklon, date3df, "red", "circle",
+                   "No Mask Data",
+                   True, "NO")
+trace10 = maketrace("2/26/2021", date3unknownlat, date3unknownlon, date3df, "grey", "circle",
+                   "Unknown data", True, "UNKNOWN")
+
 iddf = DataFrame(ids, columns=['ID'])
 trace22 = maketrace("Mask Compliant and<br>Social Distancing", masklat, masklon, iddf, "blue", "circle", "Mask Data",
                     True,
@@ -386,21 +418,21 @@ nsocdistandnmaskdate = []
 
 for i in pf.index:
     allids.append(pf['id'][i])
-    if pf["withmask"][i] == 1:
-        if pf["socialdist"][i] == 1:
+    if pf["withmask (0=without mask)"][i] == 1:
+        if pf["socialdist (0=not physical distancing < 6 ft)"][i] == 1:
             maskandsdlat.append(pf['LAT'][i])
             maskandsdlon.append(pf['LON'][i])
             maskandsddate.append(pf['date'][i])
-        elif pf["socialdist"][i] == 0:
+        elif pf["socialdist (0=not physical distancing < 6 ft)"][i] == 0:
             maskandnsdlat.append(pf['LAT'][i])
             maskandnsdlon.append(pf['LON'][i])
             maskandnsddate.append(pf['date'][i])
-    if pf["withmask"][i] == 0:
-        if pf["socialdist"][i] == 1:
+    if pf["withmask (0=without mask)"][i] == 0:
+        if pf["socialdist (0=not physical distancing < 6 ft)"][i] == 1:
             socdistandnmasklat.append(pf['LAT'][i])
             socdistandnmasklon.append(pf['LON'][i])
             socdistandnmaskdate.append(pf['date'][i])
-        elif pf["socialdist"][i] == 0:
+        elif pf["socialdist (0=not physical distancing < 6 ft)"][i] == 0:
             nsocdistandnmasklat.append(pf['LAT'][i])
             nsocdistandnmasklon.append(pf['LON'][i])
             nsocdistandnmaskdate.append(pf['date'][i])
@@ -449,12 +481,12 @@ updatemenus = list([
                   method="restyle",
                   args=[{"visible": [False, True, True, True, False, False, False, False, False, False,
                                      False, False, False, False, False, False, False, False, False, False,
-                                     False, False]}]),
+                                     False, False, False, False, False]}]),
              # hide trace2
              dict(label="Mask and<br>Social Distance<br>Options",
                   method="restyle",
                   args=[{"visible": [False, False, False, False, False, False, False, False, False, False,
-                                     True, True, True, True, True, True, True, True, True, True,
+                                     False, False, False,True, True, True, True, True, True, True, True, True, True,
                                      True, True]}]),
 
          ]),
@@ -537,14 +569,15 @@ fig.update_layout(
     hovermode="x unified",
 
 )
-data = [trace1, trace22, trace23, trace24, trace2, trace3, trace4, trace5, trace6, trace7,
+data = [trace1, trace22, trace23, trace24, trace2, trace3, trace4, trace5, trace6, trace7, trace8, trace9, trace10,
         trace25, trace26, trace27, trace28, trace29, trace30, trace31, trace32, trace33, trace34, trace35, trace36]
 labels = ["Buildings", "All Data", "", "", "2/10/2021<br>Time Stamp:<br>11:14:02 AM - 11:39:08 AM", "", "",
-          "2/16/2021<br>Time Stamp:<br>13:18:32 PM - 13:37:34 PM", "", ""]
+          "2/16/2021<br>Time Stamp:<br>13:18:32 PM - 13:37:34 PM", "", "", "2/26/2021<br>Time Stamp:<br>12:28:28 PM - "
+                                                                           "12:53:00 PM", "", ""]
 
 figure = go.Figure(data=data, layout=layout)
 steps = []
-num_steps = 10
+num_steps = 13
 
 for i in range(1, num_steps, 3):
     step = dict(
