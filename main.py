@@ -18,8 +18,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
-url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeek1to3Data.csv'
-url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentages2021.csv'
+url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeeks1to4Data.csv'
+url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentages2021weeks1to4.csv'
 
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
 pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int", "LON": "float", "LAT": "float",
@@ -84,7 +84,7 @@ for i in per.index:
     nonwhiteper.append(per['percentnonwhite'][i])
     ageper.append(per['ageover55'][i])
 
-dates = ["2/10/2021", "2/16/2021", "2/26/2021"]
+dates = ["2/10/2021", "2/16/2021", "2/26/2021", "3/4/2021"]
 
 
 fig.append_trace(go.Scatter(
@@ -199,6 +199,14 @@ date3nomasklat = []
 date3unknownlon = []
 date3unknownlat = []
 
+date4masklon = []
+date4masklat = []
+date4id = []
+date4nomasklon = []
+date4nomasklat = []
+date4unknownlon = []
+date4unknownlat = []
+
 masklon = []
 masklat = []
 ids = []
@@ -241,6 +249,17 @@ for i in pf.index:
         else:
             date3unknownlon.append(pf['LON'][i])
             date3unknownlat.append(pf['LAT'][i])
+    if pf['date'][i] == '3/4/2021':
+        date4id.append(pf['id'][i])
+        if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
+            date4masklon.append(pf['LON'][i])
+            date4masklat.append(pf['LAT'][i])
+        elif pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 0:
+            date4nomasklon.append(pf['LON'][i])
+            date4nomasklat.append(pf['LAT'][i])
+        else:
+            date4unknownlon.append(pf['LON'][i])
+            date4unknownlat.append(pf['LAT'][i])
 
 
     ids.append(pf['id'][i])
@@ -262,10 +281,8 @@ trace1 = Scattermapbox(
     text=df['Location'],
 
     hoverinfo="lon+lat+text",
-    # SPECS
     marker=dict(
         symbol='square-stroked',
-        # BASIC
         size=12,
         color='black',
         opacity=1
@@ -400,6 +417,15 @@ trace9 = maketrace("2/26/2021", date3nomasklat, date3nomasklon, date3df, "red", 
 trace10 = maketrace("2/26/2021", date3unknownlat, date3unknownlon, date3df, "grey", "circle",
                    "Unknown data", True, "UNKNOWN")
 
+date4df = DataFrame(date4id, columns=['ID'])
+trace11 = maketrace("3/4/2021", date4masklat, date4masklon, date4df, "blue", "circle", "Mask Data", True,
+                   "YES")
+trace12 = maketrace("3/4/2021", date4nomasklat, date4nomasklon, date4df, "red", "circle",
+                   "No Mask Data",
+                   True, "NO")
+trace13 = maketrace("3/4/2021", date4unknownlat, date4unknownlon, date4df, "grey", "circle",
+                   "Unknown data", True, "UNKNOWN")
+
 iddf = DataFrame(ids, columns=['ID'])
 trace22 = maketrace("Mask Compliant and<br>Social Distancing", masklat, masklon, iddf, "blue", "circle", "Mask Data",
                     True,
@@ -489,12 +515,13 @@ updatemenus = list([
                   method="restyle",
                   args=[{"visible": [False, True, True, True, False, False, False, False, False, False,
                                      False, False, False, False, False, False, False, False, False, False,
-                                     False, False, False, False, False]}]),
+                                     False, False, False, False, False, False, False, False]}]),
              # hide trace2
              dict(label="Mask and<br>Social Distance<br>Options",
                   method="restyle",
                   args=[{"visible": [False, False, False, False, False, False, False, False, False, False,
-                                     False, False, False,True, True, True, True, True, True, True, True, True, True,
+                                     False, False, False, False, False, False,
+                                     True, True, True, True, True, True, True, True, True, True,
                                      True, True]}]),
 
          ]),
@@ -578,14 +605,15 @@ fig.update_layout(
 
 )
 data = [trace1, trace22, trace23, trace24, trace2, trace3, trace4, trace5, trace6, trace7, trace8, trace9, trace10,
-        trace25, trace26, trace27, trace28, trace29, trace30, trace31, trace32, trace33, trace34, trace35, trace36]
+        trace11, trace12, trace13,trace25, trace26, trace27, trace28, trace29, trace30, trace31, trace32, trace33,
+        trace34, trace35, trace36]
 labels = ["Buildings", "All Data", "", "", "2/10/2021<br>Time Stamp:<br>11:14:02 AM - 11:39:08 AM", "", "",
           "2/16/2021<br>Time Stamp:<br>13:18:32 PM - 13:37:34 PM", "", "", "2/26/2021<br>Time Stamp:<br>12:28:28 PM - "
-                                                                           "12:53:00 PM", "", ""]
+          "12:53:00 PM", "", "", "3/4/2021<br>Time Stamp:<br>12:30:39 PM - 12:52:07 PM", "", ""]
 
 figure = go.Figure(data=data, layout=layout)
 steps = []
-num_steps = 13
+num_steps = 16
 
 for i in range(1, num_steps, 3):
     step = dict(
