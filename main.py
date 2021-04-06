@@ -18,8 +18,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
-url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeeks1to6Data.csv'
-url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentages2021weeks1to6.csv'
+url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/Weeks1to6Data.csv'
+url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentages2021week1to6.csv'
 
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
 pf = pd.read_csv(url2, dtype={"id": "int", "date": "string", "timeofday": "int", "LON": "float", "LAT": "float",
@@ -84,7 +84,7 @@ for i in per.index:
     nonwhiteper.append(per['percentnonwhite'][i])
     ageper.append(per['ageover55'][i])
 
-dates = ["2/10/2021", "2/16/2021", "2/26/2021", "3/4/2021", "Week 5 missing", "3/15/2021"]
+dates = ["2/10/2021", "2/16/2021", "2/26/2021", "3/4/2021", "3/11/2021", "3/15/2021"]
 
 
 fig.append_trace(go.Scatter(
@@ -276,8 +276,8 @@ for i in pf.index:
         else:
             date4unknownlon.append(pf['LON'][i])
             date4unknownlat.append(pf['LAT'][i])
-    if pf['date'][i] == 'Week 5':
-        date6id.append(pf['id'][i])
+    if pf['date'][i] == '3/11/2021':
+        date5id.append(pf['id'][i])
         if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
             date5masklon.append(pf['LON'][i])
             date5masklat.append(pf['LAT'][i])
@@ -285,8 +285,8 @@ for i in pf.index:
             date5nomasklon.append(pf['LON'][i])
             date5nomasklat.append(pf['LAT'][i])
         else:
-            date6unknownlon.append(pf['LON'][i])
-            date6unknownlat.append(pf['LAT'][i])
+            date5unknownlon.append(pf['LON'][i])
+            date5unknownlat.append(pf['LAT'][i])
     if pf['date'][i] == '3/15/2021':
         date6id.append(pf['id'][i])
         if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
@@ -465,12 +465,12 @@ trace13 = maketrace("3/4/2021", date4unknownlat, date4unknownlon, date4df, "grey
                    "Unknown data", True, "UNKNOWN")
 
 date5df = DataFrame(date5id, columns=['ID'])
-trace14 = maketrace("3//2021", date5masklat, date5masklon, date5df, "blue", "circle", "Mask Data", True,
+trace14 = maketrace("3/11/2021", date5masklat, date5masklon, date5df, "blue", "circle", "Mask Data", True,
                    "YES")
-trace15 = maketrace("3//2021", date5nomasklat, date5nomasklon, date5df, "red", "circle",
+trace15 = maketrace("3/11/2021", date5nomasklat, date5nomasklon, date5df, "red", "circle",
                    "No Mask Data",
                    True, "NO")
-trace16 = maketrace("3//2021", date5unknownlat, date5unknownlon, date5df, "grey", "circle",
+trace16 = maketrace("3/11/2021", date5unknownlat, date5unknownlon, date5df, "grey", "circle",
                    "Unknown data", True, "UNKNOWN")
 
 date6df = DataFrame(date6id, columns=['ID'])
@@ -661,12 +661,13 @@ fig.update_layout(
 
 )
 data = [trace1, trace22, trace23, trace24, trace2, trace3, trace4, trace5, trace6, trace7, trace8, trace9, trace10,
-        trace11, trace12, trace13, trace14, trace15, trace15, trace17, trace18, trace19, trace25, trace26, trace27, trace28, trace29, trace30,
+        trace11, trace12, trace13, trace14, trace15, trace16, trace17, trace18, trace19, trace25, trace26, trace27, trace28, trace29, trace30,
         trace31, trace32, trace33, trace34, trace35, trace36]
 labels = ["Buildings", "All Data", "", "", "2/10/2021<br>Time Stamp:<br>11:14:02 AM - 11:39:08 AM", "", "",
           "2/16/2021<br>Time Stamp:<br>13:18:32 PM - 13:37:34 PM", "", "", "2/26/2021<br>Time Stamp:<br>12:28:28 PM - "
           "12:53:00 PM", "", "", "3/4/2021<br>Time Stamp:<br>12:30:39 PM - 12:52:07 PM", "", "",
-          "Week 5 Missing", "", "", "3/15/2021<br>Time Stamp:<br>10:00:07 AM - 12:59:59 PM", "", ""]
+          "3/11/2021<br>Time Stamp:<br>11:31:07 AM - 11:54:49 PM", "", "",
+          "3/15/2021<br>Time Stamp:<br>10:00:07 AM - 12:59:59 PM", "", ""]
 
 figure = go.Figure(data=data, layout=layout)
 steps = []
