@@ -18,7 +18,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = flask.Flask(__name__)
 
 url = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/COVID19%20Building%20Data.csv'
-url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeek1to13Data.csv'
+url2 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/SpringWeeks1to13Data.csv'
 url3 = 'https://raw.githubusercontent.com/AlexLaMattina/ProjectDarienSpring2021/master/percentages2021week1to103csv'
 
 df = pd.read_csv(url, dtype={"Location": "string", "LON": "float", "LAT": "float"})
@@ -82,7 +82,7 @@ for i in per.index:
     ageper.append(per['ageover55'][i])
 
 dates = ["2/10/2021", "2/16/2021", "2/26/2021", "3/4/2021", "3/11/2021", "3/15/2021", "3/25/2021", "3/30/2021",
-         "4/5/2021", "4/13/2021", "4/20/2021", "Week 13"]
+         "4/5/2021", "4/13/2021", "4/20/2021", "5/7/2021"]
 
 
 fig.append_trace(go.Scatter(
@@ -422,7 +422,7 @@ for i in pf.index:
             date12unknownlon.append(pf['LON'][i])
             date12unknownlat.append(pf['LAT'][i])
 
-    if pf['date'][i] == 'Week 13':
+    if pf['date'][i] == '5/7/2021':
         date13id.append(pf['id'][i])
         if pf["Masksd (0=non-compliance with mask wearing and physical distancing)"][i] == 1:
             date13masklon.append(pf['LON'][i])
@@ -672,12 +672,12 @@ trace37 = maketrace("Week 12", date12unknownlat, date12unknownlon, date12df, "gr
                    "Unknown data", True, "UNKNOWN")
 
 date13df = DataFrame(date13id, columns=['ID'])
-trace38 = maketrace("Week 13", date13masklat, date13masklon, date13df, "blue", "circle", "Mask Data", True,
+trace38 = maketrace("5/7/2021", date13masklat, date13masklon, date13df, "blue", "circle", "Mask Data", True,
                    "YES")
-trace39 = maketrace("Week 13", date13nomasklat, date13nomasklon, date13df, "red", "circle",
+trace39 = maketrace("5/7/2021", date13nomasklat, date13nomasklon, date13df, "red", "circle",
                    "No Mask Data",
                    True, "NO")
-trace40 = maketrace("Week 13", date13unknownlat, date13unknownlon, date13df, "grey", "circle",
+trace40 = maketrace("5/7/2021", date13unknownlat, date13unknownlon, date13df, "grey", "circle",
                    "Unknown data", True, "UNKNOWN")
 
 
@@ -880,7 +880,7 @@ labels = ["Buildings", "All Data", "", "", "2/10/2021<br>Time Stamp:<br>11:14:02
           "4/13/2021<br>Time Stamp:<br>11:18:58 AM - 11:38:52 AM", "", "",
           "4/20/2021<br>Time Stamp:<br>13:35:12 PM - 13:58:57 PM", "", "",
           "Week 12<br>Time Stamp:<br>", "", "",
-          "Week 13<br>Time Stamp:<br>12:34:14 PM - 12:53:32 AM", "", ""]
+          "5/7/2021<br>Time Stamp:<br>12:34:14 PM - 12:53:32 AM", "", ""]
 
 figure = go.Figure(data=data, layout=layout)
 steps = []
